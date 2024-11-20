@@ -105,6 +105,7 @@
     <button class="button" id="toggleFontButton">서체 변경</button>
     <button class="button" id="toggleWeightButton">굵기 변경</button>
     <button class="button" id="learnMoreButton">더 알아보기</button>
+    <button class="button music-button" id="musicToggle">음악</button>
   </div>
 
   <div class="text-container" id="textContainer">
@@ -113,15 +114,21 @@
 
   <div class="footer">마우스를 드래그 해 봐!</div>
 
+  <audio id="backgroundMusic" src="back.mp3" loop></audio>
+
   <script>
     const text = "나미비아의 사막은 인물의 빈칸을 전혀 채워주지 않는 캐릭터 스터디, 무언가를 얻어간 듯 하나 결국 제자리에 맴도는 성장 영화. 부국제에서 본 영화 중 손에 꼽게 재밌었다.";
     const container = document.getElementById("textContainer");
+    const backgroundMusic = document.getElementById("backgroundMusic");
+    const musicToggle = document.getElementById("musicToggle");
 
-    // 텍스트를 랜덤한 길이로 나누기
+    let isMusicPlaying = false;
+
+    // 텍스트 랜덤 줄바꿈
     const splitTextRandomly = (text, min, max) => {
       const lines = [];
       while (text.length > 0) {
-        const length = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 min~max 글자 수
+        const length = Math.floor(Math.random() * (max - min + 1)) + min;
         lines.push(text.slice(0, length));
         text = text.slice(length);
       }
@@ -130,7 +137,7 @@
 
     // 텍스트 렌더링
     const renderText = () => {
-      const lines = splitTextRandomly(text, 5, 9); // 5~9 글자씩 랜덤으로 나누기
+      const lines = splitTextRandomly(text, 4, 10); // 4~10 글자씩 랜덤
       container.innerHTML = '';
       lines.forEach((line) => {
         const p = document.createElement("p");
@@ -141,6 +148,17 @@
     };
 
     renderText();
+
+    // 음악 토글
+    musicToggle.addEventListener("click", () => {
+      if (isMusicPlaying) {
+        backgroundMusic.pause();
+        isMusicPlaying = false;
+      } else {
+        backgroundMusic.play();
+        isMusicPlaying = true;
+      }
+    });
 
     // 서체 변경
     let isSerif = false;
@@ -163,11 +181,6 @@
       });
     });
 
-    // "더 알아보기" 버튼 링크
-    document.getElementById("learnMoreButton").addEventListener("click", () => {
-      window.open("https://www.youtube.com/watch?v=g1-f62n4aQU", "_blank");
-    });
-
     // 마우스 이동 인터랙션
     document.addEventListener("mousemove", (event) => {
       const mouseX = event.clientX;
@@ -181,8 +194,8 @@
       // 좌/우 드래그 시 대각선 쏠림
       lines.forEach((line, index) => {
         const progress = index / totalLines;
-        const offsetX = (mouseX / screenWidth - 0.5) * 200 * progress; // 좌우 쏠림
-        const offsetY = (mouseX / screenWidth - 0.5) * progress * 50; // 대각선
+        const offsetX = (mouseX / screenWidth - 0.5) * 100 * progress;
+        const offsetY = (mouseX / screenWidth - 0.5) * progress * 25;
         line.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
       });
 
@@ -201,5 +214,4 @@
   </script>
 </body>
 </html>
-
 
